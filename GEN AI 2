@@ -1,0 +1,17 @@
+pip install diffusers transformers accelerate torch
+import torch
+from diffusers import StableDiffusionPipeline
+model_id = "runwayml/stable-diffusion-v1-5"
+pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16)
+if torch.cuda.is_available():
+    print("Using CUDA (GPU)")
+    pipe = pipe.to("cuda")
+else:
+    print("CUDA not available, using CPU (will be very slow)")
+    pipe = pipe.to("cpu")
+prompt = "A men with depression "
+print(f"Generating image for prompt: '{prompt}'")
+image = pipe(prompt).images[0]
+output_filename = "generated_image.png"
+image.save(output_filename)
+print(f"Image successfully saved as '{output_filename}'")
